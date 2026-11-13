@@ -52,3 +52,18 @@ export function addDays(date: string, n: number): string {
 export function daysBetween(a: string, b: string): number {
   return Math.round((toUtc(b) - toUtc(a)) / DAY_MS);
 }
+
+/** Tanggal + jam lokal di zona `tz` menjadi instant UTC (ISO). */
+export function zonedToUtc(date: string, hhmm: string, tz: string): string {
+  const [y, mo, d] = date.split('-').map(Number);
+  const [h, mi] = hhmm.split(':').map(Number);
+  const guess = Date.UTC(y, mo - 1, d, h, mi);
+  const asLocal = (ms: number) => {
+    const p = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+      .formatToParts(new Date(ms));
+    const g = (t: string) => Number(p.find((x) => x.type === t)!.value);
+    return Date.UTC(g('year'), g('month') - 1, g('day'), g('hour'), g('minute'));
+  };
+  const offset = asLocal(guess) - guess;
+  return new Date(guess - offset).toISOString();
+}

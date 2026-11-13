@@ -40,3 +40,13 @@ describe('addDays / daysBetween', () => {
     expect(daysBetween('2027-01-21', '2026-11-12')).toBe(-70);
   });
 });
+
+import { zonedToUtc } from './dates';
+
+describe('zonedToUtc', () => {
+  test('local WIB time to an UTC instant', () => {
+    expect(zonedToUtc('2026-11-07', '07:30', 'Asia/Jakarta')).toBe('2026-11-07T00:30:00.000Z');
+    expect(zonedToUtc('2026-11-07', '00:30', 'Asia/Jakarta')).toBe('2026-11-06T17:30:00.000Z');
+    expect(zonedToUtc('2026-11-07', '07:30', 'Asia/Makassar')).toBe('2026-11-06T23:30:00.000Z');
+  });
+});

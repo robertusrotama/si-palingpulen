@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NumberField } from '@/components/form/NumberField';
 import { Switch } from '@/components/profile/Switch';
 import { ACTIVITY } from '@/lib/activity';
@@ -26,6 +26,11 @@ export function ProfileSettings({ profile, goals }: { profile: Profile; goals: G
   const [goalWeight, setGoalWeight] = useState<number | null>(null);
   const [goalBf, setGoalBf] = useState<number | null>(null);
   const active = goals.find((g) => g.endDate == null);
+  const [reduced, setReduced] = useState(false);
+  // matchMedia hanya ada di browser; dibaca setelah hydrate.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches), []);
+  const hapticsOn = p.hapticsEnabled ?? !reduced;
 
   async function save(patch: Parameters<typeof updateSettingsAction>[0]) {
     setP((s) => ({ ...s, ...patch }) as Profile);
@@ -124,6 +129,13 @@ export function ProfileSettings({ profile, goals }: { profile: Profile; goals: G
             </div>
           );
         })}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 52, borderTop: '1px solid var(--hair)' }}>
+          <span style={{ display: 'flex', flexDirection: 'column' }}>
+            <span>Getar saat menggeser</span>
+            <span className="muted" style={{ fontSize: 12 }}>Android: getar resmi. iPhone: cara tidak resmi, bisa tidak terasa.</span>
+          </span>
+          <Switch label="Getar saat menggeser" checked={hapticsOn} onChange={(v) => save({ hapticsEnabled: v })} />
+        </div>
       </section>
 
       <button type="button" className="btn" onClick={() => signOutAction()}>Keluar</button>
