@@ -51,3 +51,10 @@ export async function seedFood(
   for (const p of opts.portions ?? []) await admin.from('food_portions').insert({ user_id: userId, food_id: data.id, ...p });
   return data.id as string;
 }
+
+/** Menghapus profil, goal, target, scan, dan berat user tes (untuk alur onboarding). */
+export async function resetAllData(userId: string) {
+  const admin = adminClient();
+  await resetDailyData(userId);
+  for (const t of ['body_scans', 'goals', 'profile'] as const) await admin.from(t).delete().eq('user_id', userId);
+}

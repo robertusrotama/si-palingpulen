@@ -107,14 +107,14 @@ isOneToOne: false
                   ]
                 },"profile": {
                   Row: {
-                    "activity_factor": number,"birth_date": string,"bmr_method": string,"created_at": string,"height_cm": number,"sex": string,"timezone": string,"updated_at": string,"user_id": string
+                    "activity_factor": number,"birth_date": string,"bmr_method": string,"created_at": string,"display_name": string | null,"haptics_enabled": boolean | null,"height_cm": number,"lean_error_kg": number,"reminders_disabled": (string)[],"sex": string,"timezone": string,"updated_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "activity_factor": number,"birth_date": string,"bmr_method"?: string,"created_at"?: string,"height_cm": number,"sex": string,"timezone"?: string,"updated_at"?: string,"user_id"?: string
+                    "activity_factor": number,"birth_date": string,"bmr_method"?: string,"created_at"?: string,"display_name"?: string | null,"haptics_enabled"?: boolean | null,"height_cm": number,"lean_error_kg"?: number,"reminders_disabled"?: (string)[],"sex": string,"timezone"?: string,"updated_at"?: string,"user_id"?: string
                   }
                   Update: {
-                    "activity_factor"?: number,"birth_date"?: string,"bmr_method"?: string,"created_at"?: string,"height_cm"?: number,"sex"?: string,"timezone"?: string,"updated_at"?: string,"user_id"?: string
+                    "activity_factor"?: number,"birth_date"?: string,"bmr_method"?: string,"created_at"?: string,"display_name"?: string | null,"haptics_enabled"?: boolean | null,"height_cm"?: number,"lean_error_kg"?: number,"reminders_disabled"?: (string)[],"sex"?: string,"timezone"?: string,"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
@@ -273,6 +273,27 @@ isOneToOne: false
         to: "foods"
         isOneToOne: false
         isSetofReturn: true
+      } },
+"start_goal":
+{ Args: { "p_rate_pct_per_week": number,"p_start_date": string,"p_target_bf_pct"?: number,"p_target_date"?: string,"p_target_weight_kg"?: number,"p_type": string }; Returns: {
+              "created_at": string,
+"end_date": string | null,
+"id": string,
+"notes": string | null,
+"rate_pct_per_week": number,
+"start_date": string,
+"target_bf_pct": number | null,
+"target_date": string | null,
+"target_weight_kg": number | null,
+"type": string,
+"updated_at": string,
+"user_id": string
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "goals"
+        isOneToOne: true
+        isSetofReturn: false
       } }
           }
           Enums: {
