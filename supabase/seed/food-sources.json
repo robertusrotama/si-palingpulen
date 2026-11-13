@@ -1,0 +1,321 @@
+[
+  {
+    "key": "nasi_putih",
+    "name": "Nasi putih",
+    "aliases": [
+      "nasi"
+    ],
+    "source": "usda",
+    "ref": "168878"
+  },
+  {
+    "key": "bubur_ayam",
+    "name": "Bubur ayam (khas Jakarta)",
+    "aliases": [
+      "bubur ayam"
+    ],
+    "source": "tkpi",
+    "ref": "AP0402"
+  },
+  {
+    "key": "telur_rebus",
+    "name": "Telur rebus",
+    "aliases": [
+      "telur"
+    ],
+    "source": "usda",
+    "ref": "173424",
+    "portions": [
+      {
+        "usdaModifier": "large",
+        "label": "1 butir besar"
+      }
+    ]
+  },
+  {
+    "key": "telur_ceplok",
+    "name": "Telur ceplok",
+    "aliases": [
+      "telur goreng",
+      "telur mata sapi"
+    ],
+    "source": "usda",
+    "ref": "173423",
+    "portions": [
+      {
+        "usdaModifier": "large",
+        "label": "1 butir besar"
+      }
+    ]
+  },
+  {
+    "key": "telur_dadar",
+    "name": "Telur dadar",
+    "aliases": [
+      "omelet"
+    ],
+    "source": "usda",
+    "ref": "172185"
+  },
+  {
+    "key": "ubi_jalar_rebus",
+    "name": "Ubi jalar rebus",
+    "aliases": [
+      "ubi",
+      "kukusan"
+    ],
+    "source": "usda",
+    "ref": "168484"
+  },
+  {
+    "key": "jagung_rebus",
+    "name": "Jagung manis rebus",
+    "aliases": [
+      "jagung",
+      "kukusan"
+    ],
+    "source": "usda",
+    "ref": "169999"
+  },
+  {
+    "key": "kacang_tanah_rebus",
+    "name": "Kacang tanah rebus (bergaram)",
+    "aliases": [
+      "kacang rebus",
+      "kukusan"
+    ],
+    "source": "usda",
+    "ref": "174260"
+  },
+  {
+    "key": "edamame_rebus",
+    "name": "Edamame rebus",
+    "aliases": [
+      "kacang kedelai rebus",
+      "kukusan"
+    ],
+    "source": "usda",
+    "ref": "168411"
+  },
+  {
+    "key": "ayam_goreng_paha",
+    "name": "Ayam goreng paha (dengan kulit)",
+    "aliases": [
+      "ayam goreng"
+    ],
+    "source": "usda",
+    "ref": "173624"
+  },
+  {
+    "key": "ayam_goreng_dada",
+    "name": "Ayam goreng dada (dengan kulit)",
+    "aliases": [
+      "ayam goreng"
+    ],
+    "source": "usda",
+    "ref": "171476"
+  },
+  {
+    "key": "ayam_panggang_paha",
+    "name": "Ayam bakar paha (dengan kulit)",
+    "aliases": [
+      "ayam bakar",
+      "ayam panggang"
+    ],
+    "source": "usda",
+    "ref": "173625"
+  },
+  {
+    "key": "ayam_panggang_dada",
+    "name": "Ayam bakar dada (dengan kulit)",
+    "aliases": [
+      "ayam bakar",
+      "ayam panggang"
+    ],
+    "source": "usda",
+    "ref": "171075"
+  },
+  {
+    "key": "ayam_goreng_tepung",
+    "name": "Ayam goreng tepung paha",
+    "aliases": [
+      "ayam crispy",
+      "ayam tepung"
+    ],
+    "source": "usda",
+    "ref": "172386"
+  },
+  {
+    "key": "ayam_geprek",
+    "name": "Ayam geprek",
+    "aliases": [
+      "geprek"
+    ],
+    "source": "tkpi",
+    "ref": "FP0448"
+  },
+  {
+    "key": "rendang",
+    "name": "Rendang daging sapi",
+    "aliases": [
+      "rendang",
+      "nasi padang"
+    ],
+    "source": "tkpi",
+    "ref": "FP0062"
+  },
+  {
+    "key": "mie_kuning_rebus",
+    "name": "Mie telur rebus",
+    "aliases": [
+      "mie kuning",
+      "mi"
+    ],
+    "source": "usda",
+    "ref": "168919"
+  },
+  {
+    "key": "mie_ayam",
+    "name": "Mie ayam",
+    "aliases": [
+      "mi ayam"
+    ],
+    "source": "tkpi",
+    "ref": "AP0085"
+  },
+  {
+    "key": "bakso_sapi",
+    "name": "Bakso sapi",
+    "aliases": [
+      "bakso",
+      "baso"
+    ],
+    "source": "tkpi",
+    "ref": "FP0149"
+  },
+  {
+    "key": "nasi_goreng",
+    "name": "Nasi goreng",
+    "aliases": [
+      "nasgor"
+    ],
+    "source": "tkpi",
+    "ref": "AP0447"
+  },
+  {
+    "key": "tempe",
+    "name": "Tempe dimasak (bukan goreng)",
+    "aliases": [
+      "tempe"
+    ],
+    "source": "usda",
+    "ref": "172467"
+  },
+  {
+    "key": "tahu_goreng",
+    "name": "Tahu goreng",
+    "aliases": [
+      "tahu"
+    ],
+    "source": "usda",
+    "ref": "172451"
+  },
+  {
+    "key": "sawi_hijau_rebus",
+    "name": "Sawi hijau rebus",
+    "aliases": [
+      "sawi",
+      "sayur"
+    ],
+    "source": "usda",
+    "ref": "169257"
+  },
+  {
+    "key": "daun_singkong_rebus",
+    "name": "Daun singkong rebus",
+    "aliases": [
+      "daun singkong",
+      "nasi padang",
+      "sayur"
+    ],
+    "source": "tkpi",
+    "ref": "DP0008"
+  },
+  {
+    "key": "sambal_hijau",
+    "name": "Sambal hijau",
+    "aliases": [
+      "sambal ijo",
+      "nasi padang"
+    ],
+    "source": "tkpi",
+    "ref": "NP0177"
+  },
+  {
+    "key": "santan",
+    "name": "Santan kaleng",
+    "aliases": [
+      "santan"
+    ],
+    "source": "usda",
+    "ref": "170173"
+  },
+  {
+    "key": "minyak_goreng",
+    "name": "Minyak goreng (sawit)",
+    "aliases": [
+      "minyak"
+    ],
+    "source": "usda",
+    "ref": "171015"
+  },
+  {
+    "key": "gula_pasir",
+    "name": "Gula pasir",
+    "aliases": [
+      "gula"
+    ],
+    "source": "usda",
+    "ref": "169655",
+    "isSweetener": true
+  },
+  {
+    "key": "gula_aren",
+    "name": "Gula aren",
+    "aliases": [
+      "gula merah",
+      "gula jawa"
+    ],
+    "source": "tkpi",
+    "ref": "MP0005",
+    "isSweetener": true
+  },
+  {
+    "key": "pepaya",
+    "name": "Pepaya",
+    "aliases": [
+      "buah"
+    ],
+    "source": "usda",
+    "ref": "169926"
+  },
+  {
+    "key": "mangga",
+    "name": "Mangga",
+    "aliases": [
+      "buah"
+    ],
+    "source": "usda",
+    "ref": "169910"
+  },
+  {
+    "key": "buah_naga_merah",
+    "name": "Buah naga merah",
+    "aliases": [
+      "buah naga",
+      "buah"
+    ],
+    "source": "tkpi",
+    "ref": "ER0012"
+  }
+]

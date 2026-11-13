@@ -1,0 +1,733 @@
+[
+  {
+    "key": "nasi_putih",
+    "name": "Nasi putih",
+    "aliases": [
+      "nasi"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:168878",
+    "source_name": "Rice, white, long-grain, regular, enriched, cooked",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 130,
+      "protein_g": 2.69,
+      "carb_g": 28.17,
+      "fat_g": 0.28,
+      "fiber_g": 0.4,
+      "sugar_g": 0.05,
+      "sodium_mg": 1,
+      "satfat_g": 0.077
+    },
+    "portions": []
+  },
+  {
+    "key": "bubur_ayam",
+    "name": "Bubur ayam (khas Jakarta)",
+    "aliases": [
+      "bubur ayam"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:AP0402",
+    "source_name": "Bubur ayam (khas jakarta)",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 193,
+      "protein_g": 4,
+      "carb_g": 27,
+      "fat_g": 7,
+      "fiber_g": 0,
+      "sugar_g": null,
+      "sodium_mg": 369,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "telur_rebus",
+    "name": "Telur rebus",
+    "aliases": [
+      "telur"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:173424",
+    "source_name": "Egg, whole, cooked, hard-boiled",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 155,
+      "protein_g": 12.58,
+      "carb_g": 1.12,
+      "fat_g": 10.61,
+      "fiber_g": 0,
+      "sugar_g": 1.12,
+      "sodium_mg": 124,
+      "satfat_g": 3.267
+    },
+    "portions": [
+      {
+        "label": "1 butir besar",
+        "grams": 50
+      }
+    ]
+  },
+  {
+    "key": "telur_ceplok",
+    "name": "Telur ceplok",
+    "aliases": [
+      "telur goreng",
+      "telur mata sapi"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:173423",
+    "source_name": "Egg, whole, cooked, fried",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 196,
+      "protein_g": 13.61,
+      "carb_g": 0.83,
+      "fat_g": 14.84,
+      "fiber_g": 0,
+      "sugar_g": 0.4,
+      "sodium_mg": 207,
+      "satfat_g": 4.323
+    },
+    "portions": [
+      {
+        "label": "1 butir besar",
+        "grams": 46
+      }
+    ]
+  },
+  {
+    "key": "telur_dadar",
+    "name": "Telur dadar",
+    "aliases": [
+      "omelet"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:172185",
+    "source_name": "Egg, whole, cooked, omelet",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 154,
+      "protein_g": 10.57,
+      "carb_g": 0.64,
+      "fat_g": 11.66,
+      "fiber_g": 0,
+      "sugar_g": 0.31,
+      "sodium_mg": 155,
+      "satfat_g": 3.319
+    },
+    "portions": []
+  },
+  {
+    "key": "ubi_jalar_rebus",
+    "name": "Ubi jalar rebus",
+    "aliases": [
+      "ubi",
+      "kukusan"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:168484",
+    "source_name": "Sweet potato, cooked, boiled, without skin",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 76,
+      "protein_g": 1.37,
+      "carb_g": 17.72,
+      "fat_g": 0.14,
+      "fiber_g": 2.5,
+      "sugar_g": 5.74,
+      "sodium_mg": 27,
+      "satfat_g": 0.031
+    },
+    "portions": []
+  },
+  {
+    "key": "jagung_rebus",
+    "name": "Jagung manis rebus",
+    "aliases": [
+      "jagung",
+      "kukusan"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:169999",
+    "source_name": "Corn, sweet, yellow, cooked, boiled, drained, without salt",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 96,
+      "protein_g": 3.41,
+      "carb_g": 20.98,
+      "fat_g": 1.5,
+      "fiber_g": 2.4,
+      "sugar_g": 4.54,
+      "sodium_mg": 1,
+      "satfat_g": 0.197
+    },
+    "portions": []
+  },
+  {
+    "key": "kacang_tanah_rebus",
+    "name": "Kacang tanah rebus (bergaram)",
+    "aliases": [
+      "kacang rebus",
+      "kukusan"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:174260",
+    "source_name": "Peanuts, all types, cooked, boiled, with salt",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 318,
+      "protein_g": 13.5,
+      "carb_g": 21.26,
+      "fat_g": 22.01,
+      "fiber_g": 8.8,
+      "sugar_g": 2.47,
+      "sodium_mg": 751,
+      "satfat_g": 3.055
+    },
+    "portions": []
+  },
+  {
+    "key": "edamame_rebus",
+    "name": "Edamame rebus",
+    "aliases": [
+      "kacang kedelai rebus",
+      "kukusan"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:168411",
+    "source_name": "Edamame, frozen, prepared",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 121,
+      "protein_g": 11.91,
+      "carb_g": 8.91,
+      "fat_g": 5.2,
+      "fiber_g": 5.2,
+      "sugar_g": 2.18,
+      "sodium_mg": 6,
+      "satfat_g": 0.62
+    },
+    "portions": []
+  },
+  {
+    "key": "ayam_goreng_paha",
+    "name": "Ayam goreng paha (dengan kulit)",
+    "aliases": [
+      "ayam goreng"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:173624",
+    "source_name": "Chicken, broilers or fryers, thigh, meat and skin, cooked, fried, flour",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 262,
+      "protein_g": 26.75,
+      "carb_g": 3.18,
+      "fat_g": 14.98,
+      "fiber_g": 0.1,
+      "sugar_g": null,
+      "sodium_mg": 88,
+      "satfat_g": 4.09
+    },
+    "portions": []
+  },
+  {
+    "key": "ayam_goreng_dada",
+    "name": "Ayam goreng dada (dengan kulit)",
+    "aliases": [
+      "ayam goreng"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:171476",
+    "source_name": "Chicken, broilers or fryers, breast, meat and skin, cooked, fried, flour",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 222,
+      "protein_g": 31.84,
+      "carb_g": 1.64,
+      "fat_g": 8.87,
+      "fiber_g": 0.1,
+      "sugar_g": null,
+      "sodium_mg": 76,
+      "satfat_g": 2.45
+    },
+    "portions": []
+  },
+  {
+    "key": "ayam_panggang_paha",
+    "name": "Ayam bakar paha (dengan kulit)",
+    "aliases": [
+      "ayam bakar",
+      "ayam panggang"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:173625",
+    "source_name": "Chicken, broilers or fryers, thigh, meat and skin, cooked, roasted",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 232,
+      "protein_g": 23.26,
+      "carb_g": 0,
+      "fat_g": 14.71,
+      "fiber_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 102,
+      "satfat_g": 4.111
+    },
+    "portions": []
+  },
+  {
+    "key": "ayam_panggang_dada",
+    "name": "Ayam bakar dada (dengan kulit)",
+    "aliases": [
+      "ayam bakar",
+      "ayam panggang"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:171075",
+    "source_name": "Chicken, broilers or fryers, breast, meat and skin, cooked, roasted",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 197,
+      "protein_g": 29.8,
+      "carb_g": 0,
+      "fat_g": 7.78,
+      "fiber_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 71,
+      "satfat_g": 2.19
+    },
+    "portions": []
+  },
+  {
+    "key": "ayam_goreng_tepung",
+    "name": "Ayam goreng tepung paha",
+    "aliases": [
+      "ayam crispy",
+      "ayam tepung"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:172386",
+    "source_name": "Chicken, broilers or fryers, thigh, meat and skin, cooked, fried, batter",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 277,
+      "protein_g": 21.61,
+      "carb_g": 9.08,
+      "fat_g": 16.53,
+      "fiber_g": 0.3,
+      "sugar_g": null,
+      "sodium_mg": 288,
+      "satfat_g": 4.41
+    },
+    "portions": []
+  },
+  {
+    "key": "ayam_geprek",
+    "name": "Ayam geprek",
+    "aliases": [
+      "geprek"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:FP0448",
+    "source_name": "Ayam Geprek",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 329,
+      "protein_g": 12,
+      "carb_g": 24,
+      "fat_g": 20,
+      "fiber_g": 1,
+      "sugar_g": null,
+      "sodium_mg": 529,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "rendang",
+    "name": "Rendang daging sapi",
+    "aliases": [
+      "rendang",
+      "nasi padang"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:FP0062",
+    "source_name": "Daging sapi, rendang, masakan",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 193,
+      "protein_g": 22,
+      "carb_g": 7,
+      "fat_g": 7,
+      "fiber_g": 0,
+      "sugar_g": null,
+      "sodium_mg": 353,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "mie_kuning_rebus",
+    "name": "Mie telur rebus",
+    "aliases": [
+      "mie kuning",
+      "mi"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:168919",
+    "source_name": "Noodles, egg, cooked, enriched, with added salt",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 138,
+      "protein_g": 4.54,
+      "carb_g": 25.16,
+      "fat_g": 2.07,
+      "fiber_g": 1.2,
+      "sugar_g": 0.4,
+      "sodium_mg": 165,
+      "satfat_g": 0.419
+    },
+    "portions": []
+  },
+  {
+    "key": "mie_ayam",
+    "name": "Mie ayam",
+    "aliases": [
+      "mi ayam"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:AP0085",
+    "source_name": "Mie ayam",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 102,
+      "protein_g": 6,
+      "carb_g": 10,
+      "fat_g": 3,
+      "fiber_g": 0,
+      "sugar_g": null,
+      "sodium_mg": 279,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "bakso_sapi",
+    "name": "Bakso sapi",
+    "aliases": [
+      "bakso",
+      "baso"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:FP0149",
+    "source_name": "Bakso sapi",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 166,
+      "protein_g": 15,
+      "carb_g": 8,
+      "fat_g": 7,
+      "fiber_g": 0,
+      "sugar_g": null,
+      "sodium_mg": 692,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "nasi_goreng",
+    "name": "Nasi goreng",
+    "aliases": [
+      "nasgor"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:AP0447",
+    "source_name": "Nasi goreng",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 240,
+      "protein_g": 2,
+      "carb_g": 29,
+      "fat_g": 12,
+      "fiber_g": 0,
+      "sugar_g": null,
+      "sodium_mg": 67,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "tempe",
+    "name": "Tempe dimasak (bukan goreng)",
+    "aliases": [
+      "tempe"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:172467",
+    "source_name": "Tempeh, cooked",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 195,
+      "protein_g": 19.91,
+      "carb_g": 7.62,
+      "fat_g": 11.38,
+      "fiber_g": null,
+      "sugar_g": null,
+      "sodium_mg": 14,
+      "satfat_g": 3.4
+    },
+    "portions": []
+  },
+  {
+    "key": "tahu_goreng",
+    "name": "Tahu goreng",
+    "aliases": [
+      "tahu"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:172451",
+    "source_name": "Tofu, fried",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 270,
+      "protein_g": 18.82,
+      "carb_g": 8.86,
+      "fat_g": 20.18,
+      "fiber_g": 3.9,
+      "sugar_g": 2.72,
+      "sodium_mg": 16,
+      "satfat_g": 2.918
+    },
+    "portions": []
+  },
+  {
+    "key": "sawi_hijau_rebus",
+    "name": "Sawi hijau rebus",
+    "aliases": [
+      "sawi",
+      "sayur"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:169257",
+    "source_name": "Mustard greens, cooked, boiled, drained, without salt",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 26,
+      "protein_g": 2.56,
+      "carb_g": 4.51,
+      "fat_g": 0.47,
+      "fiber_g": 2,
+      "sugar_g": 1.41,
+      "sodium_mg": 9,
+      "satfat_g": 0.012
+    },
+    "portions": []
+  },
+  {
+    "key": "daun_singkong_rebus",
+    "name": "Daun singkong rebus",
+    "aliases": [
+      "daun singkong",
+      "nasi padang",
+      "sayur"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:DP0008",
+    "source_name": "Daun singkong, rebus",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 39,
+      "protein_g": 3,
+      "carb_g": 4,
+      "fat_g": 0,
+      "fiber_g": 1,
+      "sugar_g": null,
+      "sodium_mg": 13,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "sambal_hijau",
+    "name": "Sambal hijau",
+    "aliases": [
+      "sambal ijo",
+      "nasi padang"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:NP0177",
+    "source_name": "Sambal hijau",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 152,
+      "protein_g": 2,
+      "carb_g": 15,
+      "fat_g": 7,
+      "fiber_g": 6,
+      "sugar_g": null,
+      "sodium_mg": 667,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "santan",
+    "name": "Santan kaleng",
+    "aliases": [
+      "santan"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:170173",
+    "source_name": "Nuts, coconut milk, canned (liquid expressed from grated meat and water)",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 197,
+      "protein_g": 2.02,
+      "carb_g": 2.81,
+      "fat_g": 21.33,
+      "fiber_g": null,
+      "sugar_g": null,
+      "sodium_mg": 13,
+      "satfat_g": 18.915
+    },
+    "portions": []
+  },
+  {
+    "key": "minyak_goreng",
+    "name": "Minyak goreng (sawit)",
+    "aliases": [
+      "minyak"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:171015",
+    "source_name": "Oil, palm",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 884,
+      "protein_g": 0,
+      "carb_g": 0,
+      "fat_g": 100,
+      "fiber_g": 0,
+      "sugar_g": 0,
+      "sodium_mg": 0,
+      "satfat_g": 49.3
+    },
+    "portions": []
+  },
+  {
+    "key": "gula_pasir",
+    "name": "Gula pasir",
+    "aliases": [
+      "gula"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:169655",
+    "source_name": "Sugars, granulated",
+    "is_sweetener": true,
+    "per100": {
+      "kcal": 387,
+      "protein_g": 0,
+      "carb_g": 99.98,
+      "fat_g": 0,
+      "fiber_g": 0,
+      "sugar_g": 99.8,
+      "sodium_mg": 1,
+      "satfat_g": 0
+    },
+    "portions": []
+  },
+  {
+    "key": "gula_aren",
+    "name": "Gula aren",
+    "aliases": [
+      "gula merah",
+      "gula jawa"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:MP0005",
+    "source_name": "Gula aren",
+    "is_sweetener": true,
+    "per100": {
+      "kcal": 368,
+      "protein_g": 0,
+      "carb_g": 92,
+      "fat_g": 0,
+      "fiber_g": 0,
+      "sugar_g": null,
+      "sodium_mg": 15,
+      "satfat_g": null
+    },
+    "portions": []
+  },
+  {
+    "key": "pepaya",
+    "name": "Pepaya",
+    "aliases": [
+      "buah"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:169926",
+    "source_name": "Papayas, raw",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 43,
+      "protein_g": 0.47,
+      "carb_g": 10.82,
+      "fat_g": 0.26,
+      "fiber_g": 1.7,
+      "sugar_g": 7.82,
+      "sodium_mg": 8,
+      "satfat_g": 0.081
+    },
+    "portions": []
+  },
+  {
+    "key": "mangga",
+    "name": "Mangga",
+    "aliases": [
+      "buah"
+    ],
+    "source": "usda",
+    "source_ref": "fdc:169910",
+    "source_name": "Mangos, raw",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 60,
+      "protein_g": 0.82,
+      "carb_g": 14.98,
+      "fat_g": 0.38,
+      "fiber_g": 1.6,
+      "sugar_g": 13.66,
+      "sodium_mg": 1,
+      "satfat_g": 0.092
+    },
+    "portions": []
+  },
+  {
+    "key": "buah_naga_merah",
+    "name": "Buah naga merah",
+    "aliases": [
+      "buah naga",
+      "buah"
+    ],
+    "source": "tkpi",
+    "source_ref": "tkpi:ER0012",
+    "source_name": "Buah naga merah, segar",
+    "is_sweetener": false,
+    "per100": {
+      "kcal": 71,
+      "protein_g": 1,
+      "carb_g": 9,
+      "fat_g": 3,
+      "fiber_g": 3,
+      "sugar_g": null,
+      "sodium_mg": 10,
+      "satfat_g": null
+    },
+    "portions": []
+  }
+]
