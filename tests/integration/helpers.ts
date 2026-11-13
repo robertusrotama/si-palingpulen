@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '../../src/lib/supabase/database.types';
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -19,11 +20,11 @@ export function uniqueEmail(tag: string): string {
 }
 
 /** Membuat user tes lalu mengembalikan client yang sudah login sebagai user itu. */
-export async function createTestUser(email: string): Promise<SupabaseClient> {
+export async function createTestUser(email: string): Promise<SupabaseClient<Database>> {
   const password = 'test-password-123';
   const { error } = await adminClient().auth.admin.createUser({ email, password, email_confirm: true });
   if (error) throw error;
-  const client = createClient(url, anon, { auth: { persistSession: false, autoRefreshToken: false } });
+  const client = createClient<Database>(url, anon, { auth: { persistSession: false, autoRefreshToken: false } });
   const { error: e2 } = await client.auth.signInWithPassword({ email, password });
   if (e2) throw e2;
   return client;
