@@ -12,7 +12,8 @@ import { localTime, mealSlotFor } from '@/lib/dates';
 import { toFoodNutrition } from '@/lib/db/foods';
 import type { FoodRow, PortionRow } from '@/lib/db/types';
 import { fmt } from '@/lib/format';
-import { foodAction, logEntriesAction, previewAction, repeatYesterdayAction, searchAction, applySavedMealAction } from './actions';
+import { sendOrQueue } from '@/lib/offline/send';
+import { foodAction, previewAction, repeatYesterdayAction, searchAction, applySavedMealAction } from './actions';
 
 type Preview = Awaited<ReturnType<typeof previewAction>>;
 type FoodWithPortions = FoodRow & { portions: PortionRow[] };
@@ -90,11 +91,15 @@ export function CatatFlow(props: {
     setError(null);
     try {
       const nowIso = new Date().toISOString();
-      await logEntriesAction(cart.map((c) => ({
+      const rows = cart.map((c) => ({
         clientId: crypto.randomUUID(), date: props.today, mealSlot: slot, mealLabel: slot === 'other' ? label : null,
         loggedAt: nowIso, foodId: c.food.id, grams: c.grams, portionLabel: c.portionLabel,
-      })));
-      router.push('/');
+      }));
+      const r = await sendOrQueue({ clientId: rows[0].clientId, kind: 'food_entries', payload: rows });
+      if (r === 'invalid') throw new Error('invalid');
+      setCart([]);
+      if (r === 'sent') router.push('/');
+      else setSaving(false);
     } catch {
       setError('Gagal menyimpan. Coba lagi.');
       setSaving(false);

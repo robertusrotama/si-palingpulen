@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NumberField } from '../form/NumberField';
 import { fmt } from '@/lib/format';
-import { addWaterAction } from '@/app/(app)/(tabs)/actions';
+import { sendOrQueue } from '@/lib/offline/send';
 
 export function WaterButtons({ date, waterMl, targetMl }: { date: string; waterMl: number; targetMl: number | null }) {
   const router = useRouter();
@@ -12,8 +12,9 @@ export function WaterButtons({ date, waterMl, targetMl }: { date: string; waterM
   const [open, setOpen] = useState(false);
   const pct = targetMl ? Math.min(1, waterMl / targetMl) : 0;
   async function add(ml: number) {
-    await addWaterAction({ clientId: crypto.randomUUID(), date, loggedAt: new Date().toISOString(), ml });
-    router.refresh();
+    const clientId = crypto.randomUUID();
+    const r = await sendOrQueue({ clientId, kind: 'water_entry', payload: { clientId, date, loggedAt: new Date().toISOString(), ml } });
+    if (r === 'sent') router.refresh();
   }
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
