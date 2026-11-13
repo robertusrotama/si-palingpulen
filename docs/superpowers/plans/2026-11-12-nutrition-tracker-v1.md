@@ -503,7 +503,7 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
 - [ ] **Step 3:** Implementasi.
   - Halaman daftar (cari, favorit), detail (nutrisi per 100 g, porsi, arsip, "Terapkan ke entri lama" dengan rentang tanggal), dan form baru dengan tiga tab: Label / Rakit / Estimasi.
   - Semua input angka memakai `inputMode="decimal"` dan `parseDecimal`.
-  - Nilai null ditampilkan sebagai "—", bukan 0.
+  - Nilai null ditampilkan sebagai teks "tidak diketahui" (bukan 0, dan bukan em dash, sesuai aturan anti-slop).
 - [ ] **Step 4:** Jalankan tes. Expected: PASS.
 - [ ] **Step 5:** Commit: `feat: food management UI`.
 
