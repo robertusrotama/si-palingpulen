@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { existsSync } from 'node:fs';
+
+for (const f of ['.env.test.local', '.env.local']) if (existsSync(f)) process.loadEnvFile(f);
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 
