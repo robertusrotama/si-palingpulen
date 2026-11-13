@@ -17,7 +17,7 @@ test('after test login / stays in the app', async ({ page }) => {
   await loginAsTestUser(page);
   await page.goto('/');
   await expect(page).not.toHaveURL(/\/login/);
-  await expect(page.getByRole('heading', { name: 'Hari Ini' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Hari Ini', exact: true })).toBeVisible();
 });
 
 test('without a profile the app sends you to onboarding', async ({ page }) => {
