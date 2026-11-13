@@ -41,7 +41,8 @@ Perhatian khusus: **serat** adalah target utama (setara protein) karena pengguna
 - Login magic link (Supabase Auth), satu akun.
 - Profil, goal (satu aktif), target otomatis yang bisa diedit.
 - Database makanan: seed dari USDA/TKPI, makanan dari label, makanan rakitan (resep), estimasi cepat.
-- Pencatatan makan per waktu makan, air minum, berat harian.
+- Pencatatan makan per waktu makan (4 tetap + Lainnya), air minum, berat harian lewat slider dengan getar.
+- Navigasi HP 5 tab dan tata letak desktop dengan rel kiri, tab Profil berisi pengaturan.
 - Input manual hasil scan komposisi tubuh, dengan foto pembanding sementara (tidak di-upload).
 - Dashboard Hari Ini, tren berat, progres goal + proyeksi, analisis periode antar-scan, TDEE aktual estimasi.
 - Banner pengingat di dalam aplikasi.
@@ -54,7 +55,9 @@ Perhatian khusus: **serat** adalah target utama (setara protein) karena pengguna
 | Fase 2 | Mode target adaptif (target menyesuaikan dari TDEE aktual) |
 | Fase 2 | Integrasi Apple Health via iOS Shortcuts |
 | Fase 2 | OCR untuk laporan scan dan label gizi |
+| Fase 2 | Getar (haptic) asli di iPhone lewat wrapper native (mis. Capacitor) |
 | Nanti | Scan barcode, log latihan, foto progres, perbandingan dua scan berdampingan, push notification |
+| Nanti | Mode gelap. Keputusan pemilik: v1 hanya tema terang. |
 
 ### 4.3 Di luar lingkup
 - Saran medis. Aplikasi adalah alat pencatat. Keluhan ambeien tetap dikonsultasikan ke dokter.
@@ -115,7 +118,7 @@ Semua tabel memiliki `id`, `user_id`, `created_at`, `updated_at`. Satuan: gram, 
 
 **`saved_meals`** + **`saved_meal_items`** (`food_id`, `grams`): template kombinasi. Saat dipakai, template dipecah menjadi beberapa `food_entries`.
 
-**`food_entries`**: `date` (lokal, sesuai `profile.timezone`), `meal_slot` (`breakfast` | `lunch` | `dinner` | `snack`), `logged_at`, `food_id`, `grams`, `portion_label?`, **salinan nutrisi** (semua kolom nutrisi untuk gram tsb, termasuk null), `client_id` (UUID dari klien untuk mencegah duplikasi saat kirim ulang).
+**`food_entries`**: `date` (lokal, sesuai `profile.timezone`), `meal_slot` (`breakfast` | `lunch` | `snack` | `dinner` | `other`), `meal_label?` (nama bebas, hanya untuk `other`, mis. "Larut malam"), `logged_at`, `food_id`, `grams`, `portion_label?`, **salinan nutrisi** (semua kolom nutrisi untuk gram tsb, termasuk null), `client_id` (UUID dari klien untuk mencegah duplikasi saat kirim ulang).
 
 **`water_entries`**: `date`, `logged_at`, `ml`, `client_id`.
 
@@ -198,14 +201,16 @@ Isi profil (jenis kelamin, tanggal lahir, tinggi, faktor aktivitas), scan atau b
 - Indikator besar: kalori, protein, serat (aktual, target, sisa).
 - Indikator kecil: karbo, lemak, air.
 - Batas: gula tambahan, natrium, lemak jenuh, dengan cakupan data.
-- Daftar per waktu makan, dengan subtotal kkal dan serat.
+- Daftar per waktu makan berurutan Sarapan, Makan siang, Snack, Makan malam, dengan subtotal kkal dan serat. Kartu "Lainnya" hanya tampil kalau hari itu ada entri `other`; tiap label `meal_label` berbeda tampil sebagai kartu sendiri.
 - Tombol air `+250`, `+500`, `lainnya`.
 - Banner pengingat (F9).
 - Navigasi tanggal (kemarin/lusa) untuk melihat dan mengedit hari lain.
 
 ### F3. Catat makanan
-1. Tombol "+ Catat". `meal_slot` otomatis: < 10.00 sarapan, 10.00–14.59 siang, 15.00–17.59 snack, ≥ 18.00 malam. Bisa diganti.
-2. Layar pencarian menampilkan tab/daftar Favorit, Terakhir dimakan (14 hari, urut frekuensi), Meal tersimpan, dan tombol "Ulangi <waktu makan> kemarin".
+1. Tombol "+ Catat". `meal_slot` otomatis: < 10.00 sarapan, 10.00–14.59 siang, 15.00–17.59 snack, ≥ 18.00 malam. Bisa diganti ke salah satu dari 5 pilihan: Sarapan, Siang, Snack, Malam, **Lainnya**. Lainnya tidak pernah dipilih otomatis; saat dipilih, muncul kolom nama opsional (`meal_label`).
+2. Layar pencarian menampilkan:
+   - Kartu **"<waktu makan> kemarin"** berisi daftar item kemarin (nama + porsi), total kkal/protein/serat, dan tombol "Ulangi N item". Kartu disembunyikan jika slot itu kemarin kosong.
+   - Tab Favorit, Terakhir dimakan (14 hari, urut frekuensi), Meal tersimpan.
 3. Pencarian trigram pada nama + alias. Hasil muncul saat mengetik.
 4. Pilih makanan, lalu pilih porsi lewat chip porsi atau input gram dengan stepper. Pratinjau nutrisi tampil langsung.
 5. Tambah item lagi atau Simpan.
@@ -225,7 +230,20 @@ Isi profil (jenis kelamin, tanggal lahir, tinggi, faktor aktivitas), scan atau b
 Tambah cepat dari layar Hari Ini. Riwayat harian bisa diedit.
 
 ### F6. Berat badan
-Input satu angka + kondisi (default puasa).
+Layar "Timbang badan" (dibuka dari banner atau Hari Ini):
+- Angka besar berat (1 desimal) + selisih terhadap tren ("+0,1 kg dari tren 61,8").
+- **Penggaris geser:** garis tiap 0,1 kg, garis tengah tiap 0,5 kg, garis tebal + angka tiap 1 kg, jarum oranye di tengah.
+- **Slider native** (`<input type="range">`, 30–200, langkah 0,1) + tombol −/+ 0,1 kg. Keyboard: panah kiri/kanan.
+- Nilai awal = berat terakhir (atau berat scan jika belum ada).
+- Kondisi (default puasa) dan tombol "Simpan X kg".
+
+**Haptic (keputusan pemilik: opsi B, web + trik iOS):**
+- Getar pendek setiap nilai melewati kelipatan 0,1 kg, getar lebih tegas tiap 1 kg.
+- Android dan browser yang punya `navigator.vibrate`: pakai Vibration API.
+- iPhone (Safari/PWA): tidak ada API getar resmi. Dipakai trik tidak resmi: elemen `<input type="checkbox" switch>` tersembunyi yang di-toggle lewat `<label>` memicu getar sistem di iOS 18+. **Risiko:** bisa berhenti bekerja di versi iOS berikutnya tanpa pemberitahuan; aplikasi harus tetap berfungsi tanpa getar. [Perlu verifikasi di iOS yang dipakai.]
+- Trackpad MacBook: tidak bisa dipicu dari web, jadi tanpa getar.
+- Ada sakelar "Getar saat menggeser" di Profil (default menyala). Saat `prefers-reduced-motion: reduce`, default mati.
+- Getar asli lewat wrapper native ditunda ke Fase 2 (§4.2).
 
 **Validasi:** 30–200 kg. Peringatan jika berbeda > 3% dari tren (bisa tetap disimpan).
 
@@ -260,8 +278,28 @@ Input satu angka + kondisi (default puasa).
 
 Banner bisa ditutup untuk hari itu.
 
-### F10. Pengaturan
-Profil, faktor aktivitas, metode BMR, ambang margin error scan, goal (buat baru = menutup goal lama), dan ekspor seluruh data (JSON/CSV).
+### F10. Profil & pengaturan (tab Profil)
+- Akun: nama (placeholder sampai diisi), metode masuk. Tanpa foto profil buatan.
+- Profil tubuh: jenis kelamin, tanggal lahir, tinggi, faktor aktivitas, zona waktu.
+- Goal: goal aktif (tautan ke layar Target), riwayat fase, "Mulai goal baru" (menutup goal lama).
+- Pengaturan: metode BMR, ambang margin error scan, sakelar pengingat (timbang pagi, makan siang, air dan serat), sakelar getar.
+- Data: ekspor JSON/CSV. Tombol Keluar.
+
+### F11. Navigasi & tata letak
+- **HP (< 1024 px):** navbar bawah 5 tab: Hari Ini, Progres, **Catat** (tombol bulat navy di tengah), Target, Profil. Tampil di layar utama. Layar tugas (Catat, Scan, Timbang, detail makanan) memakai tombol kembali tanpa navbar.
+- **Desktop (≥ 1024 px):** rel navigasi kiri: tombol Catat (navy) di atas, lalu Hari Ini, Progres, Target, Profil. Konten maksimal 1.240 px.
+  - Hari Ini: kolom kiri (dial kalori + protein + serat, makro/air, batas), kolom kanan (daftar makan).
+  - Progres: baris kartu goal/laju/proyeksi, grafik berat lebar, tabel periode antar-scan.
+- Tab aktif ditandai bentuk cekung + `aria-current="page"`.
+
+### F12. Desain visual
+- **Referensi:** kanvas desain "Si Paling Pulen · Desain Skeuomorphism" (artifact claude.ai pemilik).
+- **Gaya:** skeuomorph cerah dan bersih. Timbul = bisa ditekan; cekung = data/isian; arsir diagonal halus = pilihan aktif.
+- **Warna:** latar `#EDF1F5→#E1E8EF`, panel `#F6F8FA→#ECF0F4`, cekung `#E4EAF0`, tinta `#141B2D`, teks sekunder `#566273`, garis `#DCE3EA`, navy aksi utama `#2A3550→#121A2C`, **satu aksen oranye `#E0662E`** hanya untuk dial kalori, jarum, titik data terbaru, dan peringatan. Air: biru muda `#A9CDEB→#5E95C6`.
+- **Huruf:** Plus Jakarta Sans 400–700, `font-variant-numeric: tabular-nums` untuk angka.
+- **Motif identitas:** dial bergaya jam analog (garis menit, jarum, tutup tengah).
+- **Tema:** terang saja di v1 (keputusan pemilik).
+- **Aturan anti-slop (mode "selama"):** tanpa em dash di teks UI; target sentuh ≥ 44 px; kontras teks ≥ 4,5:1; fokus keyboard terlihat; `cursor: pointer` di semua kontrol; status hover/aktif/nonaktif; gerakan hanya hover dan hormati `prefers-reduced-motion`; tidak ada angka, testimoni, atau aset yang dikarang; setiap tampilan data punya status kosong, memuat, dan gagal.
 
 ## 10. Sumber Data Makanan & Seed
 
@@ -335,6 +373,7 @@ Hal berikut belum diverifikasi secara langsung dan **harus dicek** sebelum dijad
 5. Perilaku PWA di versi iOS pengguna (home screen, IndexedDB, service worker).
 6. Angka AKG serat untuk pria 19–29 tahun (sebagai pembanding default 25 g / 14 g per 1.000 kkal).
 7. Perkiraan margin error lean mass untuk alat scan yang dipakai (default ambang 1,0 kg).
+8. Trik getar iOS (`<input type="checkbox" switch>` di iOS 18+): masih bekerja di versi iOS pengguna, dan di PWA mode home screen.
 
 ## 16. Pengujian
 

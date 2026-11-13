@@ -28,7 +28,11 @@
 - Setiap angka nutrisi seed punya `source` + `source_ref`. **Tidak ada angka nutrisi yang dikarang.**
 - Hosting: Vercel Hobby + Supabase Free.
 - Target interaksi: mencatat menu rutin ≤ 5 ketukan (proksi ≤ 15 detik).
-- E2E Playwright memakai viewport iPhone (`devices['iPhone 14']`) dan dijalankan dengan `--trace off`.
+- E2E Playwright memakai viewport iPhone (`devices['iPhone 14']`) dan dijalankan dengan `--trace off`. Tata letak desktop diuji dengan viewport 1440×900.
+- **Desain visual mengikuti spec F11–F12** (kanvas desain pemilik adalah acuan tampilan): token warna, Plus Jakarta Sans + `tabular-nums`, kelas material `panel`/`raised`/`inset`/`hatch`/`navy` didefinisikan sekali di `src/app/globals.css` (Task 7) dan dipakai ulang; satu aksen oranye `#E0662E`.
+- **Tema terang saja** (keputusan pemilik). Jangan menambah mode gelap.
+- **Aturan anti-slop UI** (spec F12) berlaku untuk setiap task UI: tanpa em dash di teks UI, sentuh ≥ 44 px, kontras ≥ 4,5:1, fokus terlihat, `cursor: pointer`, status hover/aktif/nonaktif, gerakan hanya hover dan hormati `prefers-reduced-motion`, setiap tampilan data punya status kosong/memuat/gagal.
+- Waktu makan: `breakfast | lunch | snack | dinner | other`. `other` tidak pernah dipilih otomatis dan boleh membawa `meal_label`.
 
 ## Review Focus
 
@@ -54,14 +58,17 @@ src/
     (app)/page.tsx                     # Hari Ini
     (app)/catat/page.tsx               # alur pencatatan
     (app)/makanan/page.tsx, makanan/[id]/page.tsx, makanan/baru/page.tsx
-    (app)/tubuh/berat/page.tsx, tubuh/scan/page.tsx
+    (app)/tubuh/timbang/page.tsx, tubuh/scan/page.tsx
     (app)/progres/page.tsx
-    (app)/pengaturan/page.tsx
+    (app)/profil/page.tsx
+    (app)/target/page.tsx
+    globals.css                        # token + kelas material (Task 7)
     (app)/onboarding/page.tsx
     (app)/*/actions.ts                 # server actions per area
   components/                          # komponen UI per area (today/, log/, food/, body/, progress/)
   lib/
     calc/types.ts, nutrition.ts, targets.ts, trend.ts, periods.ts, reminders.ts
+    haptics.ts                         # getar: Vibration API / trik switch iOS / noop
     dates.ts
     validation/number.ts, body.ts
     supabase/server.ts, client.ts, admin.ts, middleware.ts
@@ -114,7 +121,8 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   export type NutrientKey = typeof NUTRIENTS[number];
   export type Nutrients = Record<NutrientKey, number | null>; // kcal/protein/carb/fat wajib non-null (divalidasi saat simpan)
   export type FoodSource = 'usda'|'tkpi'|'label'|'custom'|'recipe'|'estimate';
-  export type MealSlot = 'breakfast'|'lunch'|'dinner'|'snack';
+  export type MealSlot = 'breakfast'|'lunch'|'snack'|'dinner'|'other';
+  export const MEAL_SLOT_ORDER: MealSlot[] = ['breakfast','lunch','snack','dinner','other'];
   export interface FoodNutrition { per100: Nutrients; partial: NutrientKey[] }
   export interface EntryNutrients { values: Nutrients; partial: NutrientKey[] }
   ```
@@ -133,6 +141,7 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   expect(mealSlotFor('09:59')).toBe('breakfast'); expect(mealSlotFor('10:00')).toBe('lunch');
   expect(mealSlotFor('14:59')).toBe('lunch');     expect(mealSlotFor('15:00')).toBe('snack');
   expect(mealSlotFor('17:59')).toBe('snack');     expect(mealSlotFor('18:00')).toBe('dinner');
+  expect(mealSlotFor('23:59')).toBe('dinner');    // 'other' tidak pernah otomatis
   expect(addDays('2026-11-12', 70)).toBe('2027-01-21'); expect(daysBetween('2026-11-12','2027-01-21')).toBe(70);
   expect(parseDecimal('9,2')).toBe(9.2); expect(parseDecimal(' 61.8 ')).toBe(61.8); expect(parseDecimal('120')).toBe(120);
   expect(parseDecimal('9,2,1')).toBeNull(); expect(parseDecimal('abc')).toBeNull(); expect(parseDecimal('')).toBeNull();
@@ -339,7 +348,8 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   - Semua kolom per §7. FK `food_entries.food_id → foods` dengan `on delete restrict`, karena makanan diarsipkan, bukan dihapus.
   - Unique `(user_id, client_id)` pada ketiga tabel entri.
   - Partial unique index `goals(user_id) where end_date is null`.
-  - `check` untuk enum dan rentang dasar (gram > 0, ml > 0).
+  - `check` untuk enum dan rentang dasar (gram > 0, ml > 0). `food_entries.meal_slot in ('breakfast','lunch','snack','dinner','other')`, dan `meal_label is null or meal_slot = 'other'` (panjang ≤ 40).
+  - Tambah tes: insert `meal_label='Larut malam'` dengan `meal_slot='lunch'` → error check.
   - Kolom `user_id uuid not null default auth.uid()`.
   - RLS dengan policy `for all using (user_id = auth.uid()) with check (user_id = auth.uid())` di setiap tabel.
   - `create extension pg_trgm`, index GIN trigram pada `search_text`.
@@ -353,8 +363,8 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
 ### Task 7: Auth satu akun & app shell
 
 **Files:**
-- Create: `src/lib/supabase/server.ts`, `client.ts`, `admin.ts`, `middleware.ts`, `src/middleware.ts`, `src/app/login/*`, `src/app/auth/callback/route.ts`, `src/app/api/test/login/route.ts`, `src/app/(app)/layout.tsx`, `src/lib/auth/allowlist.ts`
-- Test: `src/lib/auth/allowlist.test.ts`, `src/app/api/test/login/route.test.ts`, `e2e/helpers.ts`, `e2e/auth.spec.ts`
+- Create: `src/lib/supabase/server.ts`, `client.ts`, `admin.ts`, `middleware.ts`, `src/middleware.ts`, `src/app/login/*`, `src/app/auth/callback/route.ts`, `src/app/api/test/login/route.ts`, `src/app/(app)/layout.tsx`, `src/lib/auth/allowlist.ts`, `src/app/globals.css`, `src/components/shell/BottomNav.tsx`, `src/components/shell/SideRail.tsx`
+- Test: `src/lib/auth/allowlist.test.ts`, `src/app/api/test/login/route.test.ts`, `e2e/helpers.ts`, `e2e/auth.spec.ts`, `e2e/shell.spec.ts`
 
 **Interfaces:**
 - Produces:
@@ -362,7 +372,9 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   - `createBrowserSupabase(): SupabaseClient<Database>`
   - `isAllowedEmail(email:string, allowed:string): boolean` (case-insensitive, trim)
 - Produces E2E helper: `loginAsTestUser(page: Page): Promise<void>`, memanggil `POST /api/test/login`.
-- Produces layout: halaman di `(app)` wajib sesi. Jika belum ada `profile`, pengguna diarahkan ke `/onboarding` (halamannya dibangun di Task 13). Nav bawah: Hari Ini, Catat, Progres, Pengaturan.
+- Produces layout: halaman di `(app)` wajib sesi. Jika belum ada `profile`, pengguna diarahkan ke `/onboarding` (halamannya dibangun di Task 13).
+- Produces navigasi (spec F11): `<BottomNav active>` di < 1024 px dengan urutan Hari Ini (`/`), Progres (`/progres`), Catat (`/catat`, tombol bulat navy di tengah), Target (`/target`), Profil (`/profil`); `<SideRail active>` di ≥ 1024 px dengan Catat di atas lalu empat tab lain. Halaman tugas (`/catat`, `/tubuh/*`, `/makanan/*`) memakai prop layout `hideNav` dan tombol kembali.
+- Produces `globals.css`: token warna, font Plus Jakarta Sans (via `next/font/google`), kelas material `.panel .raised .inset .hatch .btn .navy` persis seperti kanvas desain (spec F12), `:focus-visible` outline 3 px `#3B6FB6`, `cursor:pointer` untuk semua kontrol, `@media (prefers-reduced-motion: reduce)` mematikan transisi.
 
 - [ ] **Step 1: Tes gagal:**
   - `isAllowedEmail(' A@x.com ','a@x.com') === true`; `isAllowedEmail('b@x.com','a@x.com') === false`.
@@ -371,7 +383,12 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
     - Tanpa sesi, `/` dialihkan ke `/login`.
     - Submit email apa pun menampilkan teks persis "Kalau email terdaftar, link masuk sudah dikirim." (tidak membocorkan email mana yang diizinkan).
     - Setelah `loginAsTestUser`, `/` tidak dialihkan ke `/login`.
-- [ ] **Step 2:** Jalankan `npx vitest run src/lib/auth src/app/api/test && npx playwright test e2e/auth.spec.ts --trace off`. Expected: FAIL.
+  - E2E `shell.spec.ts`:
+    - Viewport iPhone: navbar bawah punya tepat 5 tautan berlabel "Hari Ini", "Progres", "Catat", "Target", "Profil" dalam urutan itu; tab halaman aktif punya `aria-current="page"`; setiap tautan tingginya ≥ 44 px.
+    - Viewport 1440×900: navbar bawah tidak terlihat, rel kiri terlihat dengan tombol "Catat makanan" paling atas.
+    - Di `/catat` navbar tidak tampil dan ada tombol "Kembali".
+    - Tab ke tautan pertama: outline fokus terlihat (computed `outline-style` bukan `none`).
+- [ ] **Step 2:** Jalankan `npx vitest run src/lib/auth src/app/api/test && npx playwright test e2e/auth.spec.ts e2e/shell.spec.ts --trace off`. Expected: FAIL.
 - [ ] **Step 3:** Implementasi.
   - Login memanggil `signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: <origin>/auth/callback } })` hanya jika `isAllowedEmail`. Respons UI selalu sama.
   - `/auth/callback` menukar `code` menjadi sesi.
@@ -501,15 +518,17 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
 **Interfaces:**
 - Consumes: Task 3 (`entryNutrients`, `scaleEntry`, `sumDay`), Task 4 (`targetFor`), Task 2 (`localDate`, `localTime`, `mealSlotFor`), Task 9, Task 10 (`PortionPicker`, `NutrientPreview`).
 - Produces:
-  - `logFoodEntries(sb, rows: { clientId:string; date:string; mealSlot:MealSlot; loggedAt:string; foodId:string; grams:number; portionLabel?:string }[]): Promise<void>` (snapshot dihitung di server, upsert by `client_id`)
-  - `updateFoodEntry(sb, id, patch: { grams?:number; mealSlot?:MealSlot }): Promise<void>` (snapshot di-scale dari snapshot lama)
+  - `logFoodEntries(sb, rows: { clientId:string; date:string; mealSlot:MealSlot; mealLabel?:string|null; loggedAt:string; foodId:string; grams:number; portionLabel?:string }[]): Promise<void>` (snapshot dihitung di server, upsert by `client_id`)
+  - `updateFoodEntry(sb, id, patch: { grams?:number; mealSlot?:MealSlot; mealLabel?:string|null }): Promise<void>` (snapshot di-scale dari snapshot lama)
+  - `slotPreview(sb, i: { date:string; slot:MealSlot }): Promise<{ items: { name:string; portion:string }[]; totals: { kcal:number; protein_g:number; fiber_g:number|null } } | null>` (untuk kartu "<slot> kemarin"; `null` jika kosong)
   - `softDeleteEntry(sb, id)`, `restoreEntry(sb, id)`
   - `copySlotFromDate(sb, i: { fromDate; toDate; slot:MealSlot; nowIso:string }): Promise<number>`
   - `expandSavedMeal(sb, i: { mealId; date; slot; nowIso }): Promise<void>`
   - `addWater(sb, i: { clientId; date; loggedAt; ml }): Promise<void>`
   - `daySummary(sb, date:string): Promise<DaySummary>`, dengan
     ```ts
-    interface DaySummary { date:string; bySlot: Record<MealSlot, { entries: EntryView[]; kcal:number; fiber_g:number|null }>;
+    interface MealGroup { slot:MealSlot; label:string|null; entries: EntryView[]; kcal:number; fiber_g:number|null }
+    interface DaySummary { date:string; groups: MealGroup[]; // urut MEAL_SLOT_ORDER; 4 slot tetap selalu ada (boleh kosong); 'other' satu grup per label, hanya jika ada entri
       totals: Nutrients; coverage: Record<NutrientKey,number>; waterMl:number; target: TargetRow|null; slotsLogged:number }
     ```
 
@@ -520,7 +539,11 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   - `copySlotFromDate` menyalin semua entri slot itu dengan `client_id` baru.
   - **Review Focus 1:** entri dengan `loggedAt` 2026-11-12T16:30Z dan `date='2026-11-12'` masuk `daySummary('2026-11-12')`.
   - `daySummary.target` = `targetFor(date)`.
+  - `daySummary.groups`: hari tanpa entri `other` → tepat 4 grup urut breakfast, lunch, snack, dinner. Dua entri `other` berlabel "Larut malam" dan satu tanpa label → 6 grup, label null tampil sebagai "Lainnya".
+  - `slotPreview` kemarin mengembalikan nama + porsi tiap item dan total; slot kosong → `null`.
 - [ ] **Step 2: Tes E2E gagal** (fixture dibuat sendiri di `beforeAll` lewat admin client, tidak bergantung pada tes Task 10):
+  - `kartu makan siang kemarin` menampilkan nama item kemarin dan total kkal, tombol "Ulangi 3 item" menambah 3 entri.
+  - `pilih Lainnya` → kolom "Nama (opsional)" muncul; simpan dengan "Larut malam" → Hari Ini punya kartu "Larut malam".
   - `catat menu favorit ≤ 5 ketukan`: dari Hari Ini, ketuk "+ Catat" → favorit "Nasi ayam test" → chip "1 piring" → "Simpan". Hitungan klik ≤ 5 dan kkal Hari Ini bertambah.
   - `ulangi makan siang kemarin` menyalin entri.
   - `hapus lalu Urungkan` mengembalikan entri.
@@ -530,7 +553,9 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
 - [ ] **Step 3:** `npm run test:int -- entries && npx playwright test e2e/logging.spec.ts --trace off`. Expected: FAIL.
 - [ ] **Step 4:** Implementasi.
   - Layar Hari Ini sesuai F2: indikator besar kkal/protein/serat dengan sisa, indikator kecil karbo/lemak/air, batas dengan teks cakupan *"data dari X% makanan"* jika < 100, daftar per slot dengan subtotal kkal dan serat, navigasi tanggal.
-  - Alur Catat sesuai F3. Daftar Terakhir memakai `recentFoods(asOf, 14)`.
+  - Alur Catat sesuai F3: pemilih 5 waktu makan (Sarapan, Siang, Snack, Malam, Lainnya), kartu "<slot> kemarin" dari `slotPreview`, lalu tab Favorit/Terakhir/Meal tersimpan. Daftar Terakhir memakai `recentFoods(asOf, 14)`.
+  - Status kosong, memuat, dan gagal untuk Hari Ini sesuai layar "Status" di kanvas desain.
+  - Desktop (≥ 1024 px) sesuai spec F11: kolom kiri dial + makro/air + batas, kolom kanan daftar makan. Tambah tes E2E 1440×900: daftar makan dan dial kalori tampil berdampingan (posisi `x` daftar makan > posisi `x` dial).
   - Tombol "Foto" disiapkan tapi disembunyikan (`hidden`), sebagai titik masuk v1.1 (§13).
   - Undo hapus aktif 5 detik lewat toast.
 - [ ] **Step 5:** Jalankan perintah Step 3. Expected: PASS.
@@ -573,10 +598,10 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
 
 ---
 
-### Task 13: Profil, goal, target, onboarding, pengaturan (F1, F10, §8.2)
+### Task 13: Profil, goal, target, onboarding (F1, F10, §8.2)
 
 **Files:**
-- Create: `src/lib/db/profile.ts`, `goals.ts`, `targets.ts`, `src/app/(app)/onboarding/*`, `src/app/(app)/pengaturan/*`, `supabase/migrations/0005_start_goal.sql`
+- Create: `src/lib/db/profile.ts`, `goals.ts`, `targets.ts`, `src/app/(app)/onboarding/*`, `src/app/(app)/profil/*`, `src/app/(app)/target/*`, `supabase/migrations/0005_start_goal.sql`
 - Test: `tests/integration/targets.test.ts`, `e2e/onboarding.spec.ts`
 
 **Interfaces:**
@@ -599,13 +624,13 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   - User baru diarahkan ke `/onboarding`.
   - Isi profil, scan awal (opsional), dan goal bulk → layar ringkasan menampilkan rincian *"BMR 1.506 × 1,55 + 204"* dan target 2.540 kkal.
   - Ubah protein jadi 120 → simpan → Hari Ini menampilkan target protein 120.
-  - Di Pengaturan, ganti metode BMR ke Mifflin → ringkasan usulan berubah.
+  - Di Profil, ganti metode BMR ke Mifflin → layar Target menampilkan usulan yang berubah.
+  - Profil: matikan sakelar "Pengingat makan siang" → setelah reload tetap mati.
 - [ ] **Step 3:** `npm run test:int -- targets && npx playwright test e2e/onboarding.spec.ts --trace off`. Expected: FAIL.
-- [ ] **Step 4:** Implementasi. Pengaturan berisi:
-  - profil, faktor aktivitas (dengan label deskriptif per nilai), metode BMR
-  - ambang margin error scan (default 1,0 kg, disimpan di `profile.lean_error_kg`; tambahkan kolom di migrasi 0005)
-  - goal baru dan riwayat goal
-  - tombol Ekspor (dibangun di Task 16)
+- [ ] **Step 4:** Implementasi.
+  - `/target`: layar Target sesuai kanvas (rincian perhitungan, metode BMR, kenop faktor aktivitas, target yang bisa diedit, batas). Onboarding memakai komponen yang sama sebagai langkah 3.
+  - `/profil` sesuai spec F10: akun (nama placeholder sampai diisi), profil tubuh, goal + riwayat + "Mulai goal baru", pengaturan, Ekspor (dibangun di Task 16), Keluar.
+  - Migrasi 0005 menambah kolom `profile.lean_error_kg numeric default 1.0`, `profile.haptics_enabled boolean` (null = ikuti default: menyala kecuali `prefers-reduced-motion`), dan `profile.reminders_disabled text[] default '{}'` (berisi `ReminderId`).
 - [ ] **Step 5:** Jalankan perintah Step 3. Expected: PASS.
 - [ ] **Step 6:** Commit: `feat: profile, goals, targets, onboarding`.
 
@@ -614,10 +639,15 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
 ### Task 14: Berat badan & input scan (F6, F7)
 
 **Files:**
-- Create: `src/lib/validation/body.ts`, `src/lib/db/body.ts`, `src/app/(app)/tubuh/**`, `src/components/body/*`
-- Test: `src/lib/validation/body.test.ts`, `tests/integration/body.test.ts`, `e2e/body.spec.ts`
+- Create: `src/lib/validation/body.ts`, `src/lib/db/body.ts`, `src/lib/haptics.ts`, `src/app/(app)/tubuh/**`, `src/components/body/*` (termasuk `WeightRuler.tsx`)
+- Test: `src/lib/validation/body.test.ts`, `src/lib/haptics.test.ts`, `tests/integration/body.test.ts`, `e2e/body.spec.ts`
 
 **Interfaces:**
+- Produces (`haptics.ts`, spec F6):
+  - `stepCrossings(prevKg:number, nextKg:number): { minor:number; major:number }` (jumlah kelipatan 0,1 dan 1,0 kg yang dilewati, arah apa pun)
+  - `createHaptics(env: { vibrate?: (pattern:number) => boolean; iosSwitchTap?: () => void; enabled:boolean; now: () => number }): { onChange(prevKg:number, nextKg:number): void }`, dengan pola: minor 8 ms, major 18 ms (Vibration API), maksimal satu getar per 35 ms; tanpa `vibrate`, panggil `iosSwitchTap` sekali per getar; `enabled=false` → tidak memanggil apa pun.
+  - `detectHapticEnv(win: Window, doc: Document): Omit<Parameters<typeof createHaptics>[0], 'enabled'|'now'>`: `vibrate` jika `'vibrate' in navigator`; selain itu, jika `<input type="checkbox" switch>` didukung (cek `'switch' in HTMLInputElement.prototype`), buat satu `<label>` tersembunyi berisi switch dan kembalikan `iosSwitchTap = () => label.click()`; selain itu keduanya `undefined`.
+- Produces (`WeightRuler.tsx`): `<WeightRuler valueKg onChange min=30 max=200 />` berisi penggaris (garis 0,1 / 0,5 / 1,0 kg), `<input type="range" step="0.1">` dengan `aria-valuetext="61,9 kilogram"`, dan tombol −/+ 0,1 kg.
 - Produces:
   - `validateWeight(kg:number, trendKg:number|null): { errors: ('weight_out_of_range')[]; warnings: ('weight_far_from_trend')[] }`
   - `validateScan(s: ScanInput, prev: ScanInput|null): { errors: ScanError[]; warnings: ScanWarning[] }`, dengan
@@ -639,17 +669,30 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   expect(validateWeight(29,null).errors).toContain('weight_out_of_range');
   expect(validateWeight(64,61.8).warnings).toContain('weight_far_from_trend');   // 3,56%
   expect(validateWeight(63.6,61.8).warnings).toEqual([]);                          // 2,9%
+  // haptics
+  expect(stepCrossings(61.8,61.9)).toEqual({minor:1,major:0});
+  expect(stepCrossings(61.9,62.0)).toEqual({minor:1,major:1});
+  expect(stepCrossings(62.0,61.9)).toEqual({minor:1,major:1});
+  expect(stepCrossings(61.0,61.5)).toEqual({minor:5,major:0});
+  // createHaptics: 61,9 -> 62,0 memanggil vibrate(18); 61,0 -> 61,5 dalam satu event -> satu panggilan vibrate(8);
+  // dua event berjarak 10 ms -> panggilan kedua diabaikan; enabled=false -> 0 panggilan;
+  // env tanpa vibrate tapi ada iosSwitchTap -> iosSwitchTap dipanggil sekali.
   ```
 - [ ] **Step 2: Tes E2E gagal:**
-  - Banner/halaman berat: ketik "61,9" → simpan → tampil "61,9 kg" (**Review Focus 2**).
+  - Layar Timbang: nilai awal = berat terakhir; fokus slider lalu tekan ArrowRight → tampil "62,0 kg" dan "+0,2 kg dari tren"; tombol "−" → "61,9".
+  - Geser ke 64,0 → peringatan "Beda lebih dari 3% dari tren" tampil, tombol simpan tetap aktif.
+  - Simpan → Hari Ini tidak lagi menampilkan banner "Belum timbang hari ini" (**Review Focus 2** untuk input desimal tetap diuji di form scan).
+  - Dengan `page.emulateMedia({ reducedMotion: 'reduce' })` dan `haptics_enabled` null, sakelar "Getar saat menggeser" di Profil tampil mati.
   - Form scan: urutan field sesuai F7.
-  - Ketik % lemak "92" → tampil error dan simpan diblokir. Ganti "14,9" → simpan sukses.
+  - Ketik % lemak "92" → tampil error dan simpan diblokir. Ganti "14,9" (koma) → simpan sukses dan tersimpan 14.9.
   - Pilih foto → pratinjau tampil, dan tidak ada request jaringan yang membawa file gambar (assert `page.on('request')` tanpa body multipart/gambar).
 - [ ] **Step 3:** `npx vitest run src/lib/validation && npm run test:int -- body && npx playwright test e2e/body.spec.ts --trace off`. Expected: FAIL.
 - [ ] **Step 4:** Implementasi.
   - Pratinjau foto memakai `URL.createObjectURL`, lalu `revokeObjectURL` saat unmount.
   - Peringatan bisa dilewati dengan konfirmasi "Simpan tetap".
   - `addWeight` ikut antrean offline: tambahkan kind `weight_entry` ke `send` di Task 12.
+  - Layar `/tubuh/timbang` sesuai kanvas (angka besar, selisih tren, `WeightRuler`, kondisi, "Simpan X kg"). Haptic memakai `createHaptics(detectHapticEnv(window, document))` dengan `enabled` dari `profile.haptics_enabled` (null → `!matchMedia('(prefers-reduced-motion: reduce)').matches`). Sakelar "Getar saat menggeser" ditambahkan ke Profil.
+- [ ] **Step 4b: Verifikasi §15 butir 8** di iPhone pengguna setelah deploy (Task 17): geser slider di PWA home screen dan catat apakah getar terasa. Jika tidak, catat di README; fitur lain tetap berjalan.
 - [ ] **Step 5:** Jalankan perintah Step 3. Expected: PASS.
 - [ ] **Step 6:** Commit: `feat: weight and body scan input`.
 
@@ -692,6 +735,7 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   - Grafik (Recharts): titik berat mentah + garis tren; fat mass dan lean mass per scan dengan batang rata-rata kkal per periode.
   - Teks proyeksi `range`: "kemungkinan <bulan earliest>–<bulan latest>". Teks `earliest_only`: "paling cepat <tanggal>". Teks `none`: "Belum ada proyeksi: tren berat datar/berlawanan".
   - Riwayat goal ditampilkan sebagai daftar.
+  - Desktop (≥ 1024 px) sesuai spec F11: baris kartu goal/laju/proyeksi, grafik berat lebar, tabel periode dalam kotak `overflow-x: auto`.
 - [ ] **Step 5: Verifikasi §15 butir 7.** Cari perkiraan margin error lean mass dari dokumentasi alat atau literatur BIA dan catat di README. Default 1,0 kg tetap kecuali pengguna setuju diubah.
 - [ ] **Step 6:** Jalankan perintah Step 3. Expected: PASS.
 - [ ] **Step 7:** Commit: `feat: progress and scan-period analysis`.
@@ -709,7 +753,7 @@ vitest.config.ts, vitest.integration.config.ts, playwright.config.ts
   ```ts
   type ReminderId = 'weigh_in'|'lunch_missing'|'water_low'|'fiber_low'|'target_update';
   ```
-  - `activeReminders(i: { nowHHmm:string; hasWeighInToday:boolean; lunchLogged:boolean; waterMl:number; waterTargetMl:number; fiberG:number|null; fiberTargetG:number; targetUpdateSuggested:boolean; dismissed: ReminderId[] }): ReminderId[]`
+  - `activeReminders(i: { nowHHmm:string; hasWeighInToday:boolean; lunchLogged:boolean; waterMl:number; waterTargetMl:number; fiberG:number|null; fiberTargetG:number; targetUpdateSuggested:boolean; dismissed: ReminderId[]; disabled: ReminderId[] }): ReminderId[]` (`disabled` = `profile.reminders_disabled`; sakelar Profil "air dan serat" mematikan `water_low` dan `fiber_low` sekaligus; tes: `disabled:['lunch_missing']` pukul 15:00 tanpa makan siang → tidak ada `lunch_missing`)
   - `exportAll(sb, format:'json'|'csv'): Promise<{ filename:string; contentType:string; body:string|Uint8Array }>`. JSON berisi semua tabel. CSV berbentuk zip per tabel, atau satu CSV `food_entries` jika zip menambah dependensi. Pilih **JSON + CSV `food_entries`, `weight_entries`, `body_scans` dalam zip memakai `fflate`**.
 - Teks banner persis sesuai tabel F9: "Belum timbang hari ini", "Makan siang belum dicatat", "Air minum baru X%", "Serat baru X g dari Y g", "Target bisa diperbarui".
 
