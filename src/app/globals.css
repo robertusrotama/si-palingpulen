@@ -82,6 +82,31 @@ button:disabled, input:disabled { cursor: not-allowed; }
   font: 500 16px var(--font-jakarta), system-ui, sans-serif; color: var(--ink);
 }
 
+/* Onboarding bertahap */
+.ob-shell { max-width: 520px; margin: 0 auto; min-height: 100dvh; padding: 16px 16px 0; display: flex; flex-direction: column; gap: 22px; }
+.ob-progress { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #2a3550, #121a2c); transition: width 0.3s ease; }
+.ob-step { flex: 1; display: flex; flex-direction: column; animation: ob-in-fwd 0.28s ease both; }
+.ob-step[data-dir="back"] { animation-name: ob-in-back; }
+@keyframes ob-in-fwd { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+@keyframes ob-in-back { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+.ob-list { display: flex; flex-direction: column; gap: 12px; }
+.ob-card {
+  width: 100%; min-height: 72px; padding: 14px 18px; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  color: var(--ink); font-family: var(--font-jakarta), system-ui, sans-serif; transition: transform 0.12s, background 0.15s;
+}
+.ob-card.navy { color: #ffffff; }
+.ob-card:active { transform: scale(0.985); }
+.ob-check { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #b4bfcc; }
+.ob-check[data-on="true"] { border-color: #ffffff; background: radial-gradient(circle, #ffffff 0 5px, transparent 6px); }
+.ob-measure { display: flex; flex-direction: column; gap: 22px; }
+.ob-wheel { scrollbar-width: none; overscroll-behavior: contain; outline-offset: 4px;
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent); }
+.ob-wheel::-webkit-scrollbar { display: none; }
+.ob-footer { position: sticky; bottom: 0; display: flex; flex-direction: column; gap: 8px; padding: 12px 0 calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(225, 232, 239, 0), var(--bg-bottom) 30%); }
+.ob-cta { min-height: 56px; border-radius: 28px; font-size: 16px; }
+.ob-skip { min-height: 44px; background: transparent; border-color: transparent; box-shadow: none; color: var(--muted); }
+
 .only-phone { display: block; }
 .only-desktop { display: none; }
 @media (min-width: 1024px) {
