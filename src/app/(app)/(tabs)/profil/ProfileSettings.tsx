@@ -8,6 +8,7 @@ import type { Goal } from '@/lib/db/goals';
 import type { Profile, ReminderId } from '@/lib/db/profile';
 import { fmt } from '@/lib/format';
 import { saveBodyProfileAction, signOutAction, startGoalAction, updateSettingsAction } from './actions';
+import { PasswordForm } from './PasswordForm';
 
 const GOAL_NAME = { bulk: 'Bulking', cut: 'Cutting', maintain: 'Maintain' } as const;
 const REMINDERS: { label: string; ids: ReminderId[] }[] = [
@@ -49,8 +50,10 @@ export function ProfileSettings({ profile, goals }: { profile: Profile; goals: G
           <input className="field-input" defaultValue={p.displayName ?? ''} placeholder="[Nama]" maxLength={60}
             onBlur={(e) => e.target.value.trim() !== (p.displayName ?? '') && save({ displayName: e.target.value.trim() || null })} />
         </label>
-        <span className="muted" style={{ fontSize: 13, paddingBottom: 14 }}>Masuk lewat magic link email</span>
+        <span className="muted" style={{ fontSize: 13, paddingBottom: 14 }}>Masuk dengan email dan kata sandi</span>
       </section>
+
+      <PasswordForm />
 
       <section className="panel" aria-label="Profil tubuh" style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
         <h2 className="label" style={{ margin: 0 }}>Profil tubuh</h2>

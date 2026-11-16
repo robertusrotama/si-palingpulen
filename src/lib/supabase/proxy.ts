@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from './env';
 
-const PUBLIC_PATHS = ['/login', '/auth/', '/api/test/'];
+const PUBLIC_PATHS = ['/login', '/signup', '/api/test/'];
 
 /** Menyegarkan sesi Supabase dan mengarahkan pengunjung tanpa sesi ke /login. */
 export async function updateSession(request: NextRequest) {

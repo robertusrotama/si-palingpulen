@@ -1,21 +1,17 @@
 'use server';
 
-import { headers } from 'next/headers';
-import { isAllowedEmail } from '@/lib/auth/allowlist';
+import { redirect } from 'next/navigation';
 import { createServerSupabase } from '@/lib/supabase/server';
 
-export type LoginState = { sent: boolean };
+export type AuthState = { error: string | null };
 
-export async function requestMagicLink(_prev: LoginState, form: FormData): Promise<LoginState> {
-  const email = String(form.get('email') ?? '');
-  if (isAllowedEmail(email, process.env.ALLOWED_EMAIL ?? '')) {
-    const origin = (await headers()).get('origin') ?? '';
-    const supabase = await createServerSupabase();
-    await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: { shouldCreateUser: false, emailRedirectTo: `${origin}/auth/callback` },
-    });
-  }
-  // Jawaban selalu sama, supaya tidak membocorkan email mana yang diizinkan.
-  return { sent: true };
+export async function signInAction(_prev: AuthState, form: FormData): Promise<AuthState> {
+  const email = String(form.get('email') ?? '').trim();
+  const password = String(form.get('password') ?? '');
+  if (!email || !password) return { error: 'Isi email dan kata sandi.' };
+  const supabase = await createServerSupabase();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  // Pesan sama untuk email tak dikenal dan kata sandi salah, supaya tidak membocorkan akun mana yang ada.
+  if (error) return { error: 'Email atau kata sandi salah.' };
+  redirect('/');
 }

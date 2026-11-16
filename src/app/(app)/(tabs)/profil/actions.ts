@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { validateNewPassword } from '@/lib/auth/credentials';
 import { startGoal } from '@/lib/db/goals';
 import { saveProfile, updateProfileSettings, type Profile } from '@/lib/db/profile';
 import { userClock } from '@/lib/db/session';
@@ -25,6 +26,21 @@ export async function startGoalAction(g: { type: 'bulk' | 'cut' | 'maintain'; ta
   await startGoal(sb, { ...g, startDate: today });
   revalidatePath('/', 'layout');
   redirect('/target');
+}
+
+export type PasswordState = { error: string | null; saved: boolean };
+
+export async function setPasswordAction(_prev: PasswordState, form: FormData): Promise<PasswordState> {
+  const password = String(form.get('password') ?? '');
+  const invalid = validateNewPassword(password, String(form.get('confirm') ?? ''));
+  if (invalid) return { error: invalid, saved: false };
+  const sb = await createServerSupabase();
+  const { error } = await sb.auth.updateUser({ password });
+  if (error) {
+    if (error.code === 'same_password') return { error: 'Kata sandi baru sama dengan yang lama.', saved: false };
+    return { error: 'Gagal menyimpan kata sandi. Coba lagi.', saved: false };
+  }
+  return { error: null, saved: true };
 }
 
 export async function signOutAction() {
