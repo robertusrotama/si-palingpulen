@@ -17,6 +17,6 @@ export default defineConfig({
     url: `http://127.0.0.1:${PORT}/`,
     reuseExistingServer: true,
     timeout: 180_000,
-    env: { E2E: '1' },
+    env: { E2E: '1', ALLOWED_EMAIL: 'e2e-signup@test.local' },
   },
 });
