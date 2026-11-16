@@ -38,7 +38,7 @@ Perhatian khusus: **serat** adalah target utama (setara protein) karena pengguna
 ## 4. Ruang Lingkup
 
 ### 4.1 Masuk v1
-- Login email + kata sandi (Supabase Auth), satu akun. Akun dibuat lewat halaman Daftar.
+- Login email + kata sandi (Supabase Auth). Siapa saja bisa membuat akun lewat halaman Daftar; data tiap akun terpisah lewat RLS.
 - Profil, goal (satu aktif), target otomatis yang bisa diedit.
 - Database makanan: seed dari USDA/TKPI, makanan dari label, makanan rakitan (resep), estimasi cepat.
 - Pencatatan makan per waktu makan (4 tetap + Lainnya), air minum, berat harian lewat slider dengan getar.
@@ -75,7 +75,7 @@ Angka-angka ini dipakai sebagai contoh perhitungan di §8. Tanggal lahir, faktor
   - Mutasi data memakai Server Actions atau Route Handlers.
   - Endpoint API disiapkan untuk integrasi masa depan (Apple Health).
 - **Database & auth:** Supabase Postgres + Supabase Auth (email + kata sandi).
-  - Pendaftaran publik Supabase dimatikan. Halaman `/signup` membuat akun di server lewat admin API (butuh `SUPABASE_SERVICE_ROLE_KEY`), hanya untuk email di `ALLOWED_EMAIL`, langsung terkonfirmasi tanpa link email.
+  - Pendaftaran publik Supabase dimatikan. Halaman `/signup` membuat akun di server lewat admin API (butuh `SUPABASE_SERVICE_ROLE_KEY`), terbuka untuk email apa saja, langsung terkonfirmasi tanpa link email. `ALLOWED_EMAIL` kini hanya dipakai skrip seed makanan.
   - Semua tabel memakai Row Level Security dengan kondisi `user_id = auth.uid()`.
 - **Pencarian makanan:** ekstensi Postgres `pg_trgm` untuk pencarian toleran salah ketik pada nama dan alias.
 - **PWA:**

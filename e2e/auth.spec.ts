@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { adminClient, E2E_EMAIL, loginAsTestUser } from './helpers';
 
-const SIGNUP_EMAIL = 'e2e-signup@test.local'; // sama dengan ALLOWED_EMAIL di playwright.config.ts
+const SIGNUP_EMAIL = 'e2e-signup@test.local';
 
 test('without a session / redirects to /login', async ({ page }) => {
   await page.goto('/');
@@ -14,16 +14,6 @@ test('login with an unknown account shows one generic error', async ({ page }) =
   await page.getByLabel('Kata sandi').fill('salah-total-123');
   await page.getByRole('button', { name: 'Masuk' }).click();
   await expect(page.getByText('Email atau kata sandi salah.')).toBeVisible();
-});
-
-test('signup page is public and refuses emails outside the allowlist', async ({ page }) => {
-  await page.goto('/signup');
-  await expect(page).toHaveURL(/\/signup$/);
-  await page.getByLabel('Email').fill('siapa@contoh.test');
-  await page.getByLabel('Kata sandi', { exact: true }).fill('rahasia-123');
-  await page.getByLabel('Ulangi kata sandi').fill('rahasia-123');
-  await page.getByRole('button', { name: 'Daftar' }).click();
-  await expect(page.getByText('Email ini tidak bisa didaftarkan.')).toBeVisible();
 });
 
 test('after test login / stays in the app', async ({ page }) => {
@@ -39,7 +29,7 @@ test('without a profile the app sends you to onboarding', async ({ page }) => {
   await expect(page).toHaveURL(/\/onboarding$/);
 });
 
-test('allowed email signs up without an email link, then signs in with the password', async ({ page, context }) => {
+test('any email signs up without an email link, then signs in with the password', async ({ page, context }) => {
   const admin = adminClient();
   const { data } = await admin.auth.admin.listUsers();
   const old = data.users.find((u) => u.email === SIGNUP_EMAIL);
